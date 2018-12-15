@@ -9,13 +9,9 @@ var moment = require("moment");
 var Spotify = require("node-spotify-api");
 var fs = require('fs');
 
-var arg1 = JSON.stringify(process.argv[2]);
-var arg2 = JSON.stringify(process.argv[3]);
-
-function run(command, paramenter){
-    switch(command){
-        case "concert-this":
-            axios.get("https://rest.bandsintown.com/artists/" + paramenter + "/events?app_id=codingbootcamp")
+//don't use JSON
+function bandLookUp(band){
+    axios.get("https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp")
             .then(
                 function(response){
                     let data = response.data;
@@ -31,19 +27,21 @@ function run(command, paramenter){
                     }
                 }
             )
-            break;
-        case "spotify-this-song":
-            var spotify = new Spotify(keys.spotify);
+}
+
+function songLookUp(song){
+    var spotify = new Spotify(keys.spotify);
             spotify
-                .search({ type: 'track', query: `${paramenter}`, limit: 1 })
+                .search({ type: 'track', query: `${song}`, limit: 1 })
                 .then(function(response){
                     console.log(response.tracks.items[0].album.artists[0].name);
                     console.log(response.tracks.items[0].album.name);
                     console.log(response.tracks.items[0].album.external_urls.spotify);
                 })
-            break;
-        case "movie-this":
-            axios.get("http://www.omdbapi.com/?t="+ paramenter +"&apikey="+ keys.omdb)
+}
+
+function movieLookUp(movie){
+    axios.get("http://www.omdbapi.com/?t="+ movie +"&apikey="+ keys.omdb)
                 .then(
                     function(response){
                         console.log(response.data.Title);
@@ -56,6 +54,18 @@ function run(command, paramenter){
                         console.log(response.data.Actors);
                     }
                 )
+}
+
+function run(command, paramenter){
+    switch(command){
+        case "concert-this":
+            bandLookUp(paramenter);
+            break;
+        case "spotify-this-song":
+            songLookUp(paramenter);
+            break;
+        case "movie-this":
+            movieLookUp(paramenter);
             break;
         case "do-what-it-says":
             if (!fs.exists){
@@ -70,6 +80,9 @@ function run(command, paramenter){
             break;
     }
 }
-
+//take in the input controls
+var arg1 =  process.argv[2];
+var arg2 = process.argv[3];
+// console.log(arg1);
 run(arg1, arg2);
 
