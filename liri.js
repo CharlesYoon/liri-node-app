@@ -10,6 +10,9 @@ var Spotify = require("node-spotify-api");
 var fs = require('fs');
 
 //don't use JSON
+//messed up the string literals
+
+//refactoring, making the code look cleaner
 function bandLookUp(band){
     axios.get("https://rest.bandsintown.com/artists/" + band + "/events?app_id=codingbootcamp")
             .then(
@@ -82,7 +85,9 @@ function run(command, paramenter){
 }
 //take in the input controls
 var arg1 =  process.argv[2];
-var arg2 = process.argv[3];
+//need to take more than one section
+//process.argv[3] only takes in one block
+var arg2 = process.argv.slice(3).join("");
 // console.log(arg1);
 run(arg1, arg2);
 
